@@ -1,21 +1,28 @@
 package uz.turgunboyevjurabek.instagramui
 
 import android.graphics.fonts.FontStyle
+import android.text.Highlights
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,6 +52,26 @@ fun PreviewUi(){
         TopBar()
         ProfileSection()
         ProfileDescription()
+        Spacer(modifier = Modifier.padding(vertical = 10.dp))
+        buttonSection(list = listOf(
+            TextWithImage(Icons.Default.KeyboardArrowDown,"Following"),
+            TextWithImage(image = null,"Message"),
+            TextWithImage(image = null,"Email"),
+            TextWithImage(Icons.Default.KeyboardArrowDown, text = null),
+        ))
+        Spacer(modifier = Modifier.padding(vertical = 10.dp))
+        HighlightedSection(list = listOf(
+            Story(painterResource(id = R.drawable.jurabek),"Jurabek"),
+            Story(painterResource(id = R.drawable.jurabek),"Jurabek"),
+            Story(painterResource(id = R.drawable.jurabek),"Jurabek"),
+            Story(painterResource(id = R.drawable.jurabek),"Jurabek"),
+            Story(painterResource(id = R.drawable.jurabek),"Jurabek"),
+            Story(painterResource(id = R.drawable.jurabek),"Jurabek"),
+            Story(painterResource(id = R.drawable.jurabek),"Jurabek"),
+            Story(painterResource(id = R.drawable.jurabek),"Jurabek"),
+            Story(painterResource(id = R.drawable.jurabek),"Jurabek")
+        ))
+
     }
 
 }
@@ -97,12 +124,14 @@ fun ProfileSection(modifier: Modifier=Modifier.fillMaxWidth()){
 
 @Composable
 fun ProfileDescription(modifier: Modifier=Modifier.fillMaxWidth()){
-    Column(modifier=Modifier.padding(horizontal = 15.dp).padding(top = 20.dp),
+    Column(modifier= Modifier
+        .padding(horizontal = 15.dp)
+        .padding(top = 20.dp),
         horizontalAlignment = Alignment.Start) {
-        Text(text = "Mobile Development", color = Color.Black, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-        Text(text = "I've been doing mobile programming for 1 year. I'm currently learning English and Jetpack Compose 👨‍💻 ", color = Color.Black,fontSize = 15.sp)
-        Text(text = "How to reach me ⤵️", color = Color.Black,fontSize = 15.sp)
-        Text(text = "https://turguboyevjurabek777@gmail.com", color = Color.Blue,fontSize = 16.sp)
+        Text(text = "Mobile Development", color = Color.Black, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        Text(text = "I've been doing mobile programming for 1 year.\nI'm currently learning English and Jetpack Compose", color = Color.Black,fontSize = 13.sp)
+        Text(text = "How to reach me ⤵️", color = Color.Black,fontSize = 13.sp)
+        Text(text = "https://turguboyevjurabek777@gmail.com", color = Color.Blue,fontSize = 13.sp)
         Text(text = buildAnnotatedString {
             val buildStyle=SpanStyle(color = Color.Black, fontWeight = FontWeight.Bold)
             append("Followed by ")
@@ -111,9 +140,86 @@ fun ProfileDescription(modifier: Modifier=Modifier.fillMaxWidth()){
             pop()
             append("and ")
             pushStyle(buildStyle)
-            append("17 and others")
+            append("17 and others")})
+    }
+}
 
-        })
+
+@Composable
+fun buttonSection(modifier: Modifier= Modifier,list: List<TextWithImage>){
+    Row(modifier=modifier.fillMaxWidth()) {
+        Row(horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()) {
+
+            list.forEachIndexed{index, textWithImage ->
+                ActionButton(textWithImage = textWithImage)
+            }
+            
+        }
+    }
+
+}
+
+@Composable
+fun ActionButton(textWithImage: TextWithImage,modifier: Modifier= Modifier) {
+    Row(horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .border(
+                width = 1.5.dp,
+                color = Color.Black,
+                shape = RoundedCornerShape(10.dp)
+            )
+            .padding(5.dp)
+
+    ) {
+        if (textWithImage.text!=null){
+            Text(text = textWithImage.text?:"", fontWeight = FontWeight.SemiBold, fontSize = 20.sp)
+        }
+        if (textWithImage.image !=null){
+            Icon(imageVector = textWithImage.image, contentDescription = null)
+        }
+
+    }
+}
+
+@Composable
+fun HighlightedSection(
+    list: List<Story>,
+    modifier: Modifier= Modifier.fillMaxWidth().padding(horizontal = 5.dp)) {
+
+    LazyRow(modifier=modifier.fillMaxWidth(),
+        horizontalArrangement =Arrangement.SpaceAround){
+        items(list.size){
+            StoryItem(story = list[it])
+        }
+    }
+
+
+}
+
+@Composable
+fun StoryItem(
+    story: Story,
+    modifier: Modifier= Modifier.fillMaxWidth()){
+
+    Column(modifier=modifier.fillMaxWidth().padding(horizontal = 7.dp),
+        horizontalAlignment = Alignment.CenterHorizontally ) {
+        Image(
+            painter = story.image,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier= Modifier
+                .size(80.dp)
+                .aspectRatio(1f)
+                .border(
+                    width = 2.dp,
+                    shape = CircleShape,
+                    color = Color.Gray
+                )
+                .clip(CircleShape))
+        Text(text = story.name, fontSize = 18.sp, fontWeight = FontWeight.Medium, color = Color.Black)
 
     }
 }
